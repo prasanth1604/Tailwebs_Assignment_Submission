@@ -1,0 +1,13 @@
+env
+*/migrations/*.py
+*/migrations/*.pyc
+*/migrations/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.egg-info/
+dist/
+build/
+*.sqlite3
+*.db

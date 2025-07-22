@@ -1,0 +1,22 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Confirm Deletion{% endblock %}
+
+{% block content %}
+    <div class="confirm-delete-container">
+        <h1>Confirm Deletion</h1>
+
+        <p>Are you sure you want to delete the following student mark entry?</p>
+        <div class="entry-details">
+            <p><strong>Student Name:</strong> {{ student_entry.student_name }}</p>
+            <p><strong>Subject:</strong> {{ student_entry.get_subject_name_display }}</p>
+            <p><strong>Marks:</strong> {{ student_entry.marks }}</p>
+        </div>
+
+        <form method="post" class="delete-form">
+            {% csrf_token %}
+            <button type="submit" class="button delete-button">Confirm Delete</button>
+            <a href="{% url 'facultydashboard' %}" class="button secondary-button">Cancel</a>
+        </form>
+    </div>
+{% endblock %}

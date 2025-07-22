@@ -1,0 +1,153 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block extra_head %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{{ formset.media }} 
+{% endblock %}
+
+{% block content %}
+<h2>{{ title }}</h2>
+
+<form method="post">
+    {% csrf_token %}
+    
+    <div class="form-section">
+        <h3>Student Details</h3>
+        {% for field in student_form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                {{ field }}
+                {% if field.errors %}
+                    <ul class="errorlist">{% for error in field.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                {% endif %}
+                {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+            </div>
+        {% endfor %}
+        {% if student_form.non_field_errors %}
+            <ul class="errorlist">{% for error in student_form.non_field_errors %}<li>{{ error }}</li>{% endfor %}</ul>
+        {% endif %}
+    </div>
+
+    <div class="form-section">
+        <h3>Subjects and Marks</h3>
+        {{ formset.management_form }} {# REQUIRED for formsets #}
+        <div id="subject-formset-container">
+            {% for form in formset %}
+                <div class="subject-formset-row">
+                    {# Hidden fields for existing instances (important for edit) #}
+                    {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+
+                    {# Display current subject name for existing entries in edit mode #}
+                    {% if form.instance.pk %}
+                        <p><strong>Subject: {{ form.instance.get_subject_name_display }}</strong></p>
+                    {% endif %}
+
+                    {# Render visible fields for each subject form #}
+                    {% for field in form.visible_fields %}
+                        <div class="form-group">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <ul class="errorlist">{% for error in field.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    
+                    {% if form.DELETE %} {# Check if the delete field exists for this form #}
+                        <div class="form-group">
+                            <input type="checkbox" name="{{ form.DELETE.name }}" id="{{ form.DELETE.id_for_label }}" class="delete-checkbox"> 
+                            <label for="{{ form.DELETE.id_for_label }}">Remove this subject</label>
+                            {% if form.DELETE.errors %}<ul class="errorlist"><li>{{ form.DELETE.errors|join:", " }}</li></ul>{% endif %}
+                        </div>
+                    {% endif %}
+                    {# Button to visually remove form entry (handled by JS, marks for deletion) #}
+                    <div class="delete-button-container">
+                        <button type="button" class="btn-remove-subject">Remove this subject entry</button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <button type="button" id="add-subject-form" class="button btn-add-subject">Add Another Subject</button>
+        {% if formset.non_form_errors %}
+            <ul class="errorlist">{% for error in formset.non_form_errors %}<li>{{ error }}</li>{% endfor %}</ul>
+        {% endif %}
+    </div>
+
+    <button type="submit" class="button">Save</button> {# Button text is generic: "Save" #}
+    <a href="{% url 'facultydashboard' %}" class="button btn-cancel">Cancel</a>
+</form>
+
+
+{% block extra_js %}
+<script>
+    // Function to update field names/ids for new dynamically added forms
+    function updateElementIndex(el, prefix, ndx) {
+        var id_regex = new RegExp('(' + prefix + '-\\d+-)');
+        var replacement = prefix + '-' + ndx + '-';
+        if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex, replacement));
+        if (el.id) el.id = el.id.replace(id_regex, replacement);
+        if (el.name) el.name = el.name.replace(id_regex, replacement);
+    }
+
+    // Event listener for "Add Another Subject" button
+    $('#add-subject-form').click(function() {
+        var form_idx = $('#id_studentsubject_set-TOTAL_FORMS').val(); // Get current total forms count
+        var last_form = $('#subject-formset-container .subject-formset-row').last();
+        
+        // Clone the last form row to maintain structure and events
+        var new_form = last_form.clone(true); // 'true' means copy data and events too
+
+        // Reset values and update names/ids for the new form elements
+        new_form.find('input, select, label').each(function() {
+            updateElementIndex(this, 'studentsubject_set', form_idx);
+            // Clear values for new form fields
+            if ($(this).is('input[type="text"], input[type="number"]')) {
+                $(this).val('');
+            } else if ($(this).is('select')) {
+                $(this).val(''); // Reset select to default/first option
+            }
+        });
+        
+        // Hide delete checkbox and associated label for newly added forms (they are not yet in DB)
+        new_form.find('.delete-checkbox').prop('checked', false).parent('div.form-group').hide(); 
+        
+        // Remove "Current Subject" text (relevant for edit page, but not for new entries)
+        new_form.find('p strong:contains("Subject:")').parent().remove();
+
+        // Show the new form if it was hidden (e.g., if cloned from a deleted/hidden form)
+        new_form.show();
+
+        $('#subject-formset-container').append(new_form); // Append the new form
+        $('#id_studentsubject_set-TOTAL_FORMS').val(parseInt(form_idx) + 1); // Increment total forms count
+    });
+
+    // Handle visual hiding/marking for deletion for dynamically added forms or existing ones
+    $('#subject-formset-container').on('click', '.btn-remove-subject', function() {
+        var formRow = $(this).closest('.subject-formset-row');
+        var deleteCheckbox = formRow.find('.delete-checkbox');
+        
+        if (deleteCheckbox.length && formRow.find('input[name$="-id"]').val()) { // If it's an existing DB instance
+            deleteCheckbox.prop('checked', true); // Mark for deletion
+            formRow.hide(); // Visually hide the row
+        } else {
+            formRow.remove(); 
+        }
+    });
+
+    $(document).ready(function() {
+        $('#subject-formset-container .subject-formset-row').each(function() {
+            var deleteCheckbox = $(this).find('.delete-checkbox');
+            if (deleteCheckbox.length && deleteCheckbox.is(':checked')) {
+                $(this).hide();
+            } else if (!deleteCheckbox.length && !$(this).find('input[name$="-id"]').val()) {
+                // If it's a new, empty form (no PK, no delete checkbox), hide its "Remove" button
+                $(this).find('.btn-remove-subject').hide();
+            }
+        });
+    });
+</script>
+{% endblock %}
+{% endblock content %}

@@ -1,0 +1,335 @@
+body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #eef2f7;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            padding: 25px;
+            max-width: 1100px;
+            margin: 25px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            border-bottom: 2px solid #eef2f7;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+
+        /* Navigation Bar */
+        nav {
+            background-color: #34495e;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        nav a:hover {
+            background-color: #556c80;
+        }
+
+        nav span {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-right: 20px;
+        }
+
+        /* Messages (Django messages framework) */
+        .messages {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .messages li {
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .messages li.fade-out {
+            opacity: 0;
+        }
+
+        .messages .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .messages .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .messages .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .messages .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        /* Forms */
+        .form-container {
+            max-width: 500px;
+            margin: 30px auto;
+            padding: 30px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        form input[type="text"],
+        form input[type="password"],
+        form input[type="number"],
+        form select {
+            width: calc(100% - 24px); /* Account for padding */
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+            transition: border-color 0.3s ease;
+        }
+
+        form input[type="text"]:focus,
+        form input[type="password"]:focus,
+        form input[type="number"]:focus,
+        form select:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        .error-text {
+            color: #dc3545;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: block;
+        }
+
+        /* Buttons */
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .button:hover {
+            transform: translateY(-1px);
+        }
+
+        .primary-button {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .primary-button:hover {
+            background-color: #0056b3;
+        }
+
+        .success-button {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .success-button:hover {
+            background-color: #218838;
+        }
+
+        .danger-button {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .danger-button:hover {
+            background-color: #c82333;
+        }
+
+        .secondary-button {
+            background-color: #6c757d;
+            color: white;
+            margin-left: 10px;
+        }
+
+        .secondary-button:hover {
+            background-color: #5a6268;
+        }
+
+        /* Table Styles */
+        .table-responsive {
+            overflow-x: auto; /* Ensures table is scrollable on small screens */
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        table th, table td {
+            border: 1px solid #e0e0e0;
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color: #555;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table tr:hover {
+            background-color: #e9ecef;
+        }
+
+        table td input[type="number"] {
+            width: 80px; /* Adjust width for marks input */
+            padding: 8px;
+            text-align: center;
+        }
+
+        .action-link {
+            text-decoration: none;
+            padding: 5px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        .edit-link {
+            color: #007bff;
+            border: 1px solid #007bff;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .edit-link:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .delete-link {
+            color: #dc3545;
+            border: 1px solid #dc3545;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .delete-link:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        /* Confirm Delete Page Specific Styles */
+        .confirm-delete-container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .confirm-delete-container h1 {
+            color: #dc3545;
+        }
+
+        .confirm-delete-container p {
+            font-size: 1.1em;
+            margin-bottom: 25px;
+        }
+
+        .confirm-delete-container .entry-details {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: inline-block; /* To center the block details */
+            text-align: left;
+        }
+
+        .confirm-delete-container .entry-details p {
+            margin: 5px 0;
+        }
+
+        .delete-form {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .back-link {
+            margin-top: 20px;
+            text-align: center;
+        }

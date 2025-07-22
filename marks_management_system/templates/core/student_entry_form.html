@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <div class="form-container">
+        <h1>{{ title }}</h1>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }} 
+
+            <button type="submit" class="button primary-button">Save Entry</button>
+        </form>
+
+        <p class="back-link"><a href="{% url 'facultydashboard' %}">Back to Dashboard</a></p>
+    </div>
+{% endblock %}

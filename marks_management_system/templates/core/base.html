@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Student Management System{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+    {% block extra_head %}{% endblock extra_head %}
+</head>
+<body>
+    <nav>
+        <div class="nav-links">
+            {% if request.session.faculty_id %}
+                <span>Welcome, {{ request.session.faculty_id }}!</span>
+                <a href="{% url 'facultydashboard' %}">Dashboard</a>
+                <a href="{% url 'manage_student_entry' %}">Add New Student Mark Entry</a> 
+                <a href="{% url 'faculty_logout' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'loginAsFaculty' %}">Login</a>
+            {% endif %}
+        </div>
+    </nav>
+    <div class="container">
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% block content %}{% endblock content %}
+    </div>
+
+    <script src="{% static 'core/js/script.js' %}"></script>
+    {% block extra_js %}{% endblock extra_js %}
+</body>
+</html>

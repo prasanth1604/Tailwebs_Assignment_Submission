@@ -1,0 +1,205 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Faculty Dashboard{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Faculty Dashboard - Welcome, {{ faculty.name }}!</h1>
+
+        {# Messages Framework Display #}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+
+        <h2>All Student Subject Marks</h2>
+
+        {# Form for updating all marks at once #}
+        <form method="post">
+            {% csrf_token %}
+            {# Display non-field errors for the formset if any #}
+            {% if formset.non_form_errors %}
+                <div class="alert alert-danger">
+                    <strong>Form Errors:</strong>
+                    <ul>
+                        {% for error in formset.non_form_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Subject</th>
+                            <th>Marks</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student_instance, form in student_entries %}
+                            <tr>
+                                <td>{{ student_instance.student_name }}</td>
+                                <td>{{ student_instance.get_subject_name_display }}</td>
+                                <td>
+                                    {# Render the marks field from the form for this instance #}
+                                    {{ form.id }} {# Hidden input for the instance ID #}
+                                    {{ form.marks }}
+                                    {# Display field-specific errors if any for this particular form #}
+                                    {% for error in form.marks.errors %}
+                                        <span class="error-text">{{ error }}</span>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button type="button" class="dropbtn">Actions &#9662;</button>
+                                        <div class="dropdown-content">
+                                            <a href="{% url 'manage_student_entry' pk=student_instance.pk %}" class="action-link edit-link">Edit</a>
+                                            <a href="{% url 'delete_student_entry' pk=student_instance.pk %}" class="action-link delete-link">Delete</a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4">No student subject entries found.
+                                    <a href="{% url 'manage_student_entry' %}">Add one now</a>.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% if student_entries %} {# Only show update button if there are entries to update #}
+                <button type="submit" class="button primary-button">Update All Marks</button>
+            {% endif %}
+        </form>
+
+        <p style="margin-top: 20px;">
+            <a href="{% url 'manage_student_entry' %}" class="button success-button">Add New Student Mark Entry</a>
+        </p>
+
+
+    </div>
+
+    <style>
+        /* Dropdown Button */
+        .dropbtn {
+            background-color: #5cb85c; /* A nice green color */
+            color: white;
+            padding: 8px 12px;
+            font-size: 0.9em;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropbtn:hover, .dropbtn:focus {
+            background-color: #4cae4c;
+        }
+
+        /* The container <div> - needed to position the dropdown content */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Dropdown Content (Hidden by Default) */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 120px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 5px;
+            overflow: hidden; /* Ensures rounded corners */
+            right: 0; /* Align to the right of the button */
+        }
+
+        /* Links inside the dropdown */
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+            transition: background-color 0.2s ease;
+        }
+
+        /* Change color of dropdown links on hover */
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+        .dropdown-content.show {
+            display: block;
+        }
+
+        /* Specific styling for action links within dropdown to override general .action-link */
+        .dropdown-content .action-link {
+            border: none; /* Remove border from links inside dropdown */
+            padding: 12px 16px; /* Adjust padding for better click area */
+        }
+        .dropdown-content .edit-link {
+            color: #007bff;
+        }
+        .dropdown-content .edit-link:hover {
+            background-color: #007bff;
+            color: white;
+        }
+        .dropdown-content .delete-link {
+            color: #dc3545;
+        }
+        .dropdown-content .delete-link:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        /* Adjust table cell padding for dropdown */
+        table td {
+            position: relative; /* For dropdown positioning */
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all dropdown buttons
+            const dropdowns = document.querySelectorAll('.dropdown');
+
+            dropdowns.forEach(function(dropdown) {
+                const dropbtn = dropdown.querySelector('.dropbtn');
+                const dropdownContent = dropdown.querySelector('.dropdown-content');
+
+                // Toggle dropdown visibility when the button is clicked
+                dropbtn.addEventListener('click', function(event) {
+                    // Prevent default button action (e.g., form submission if it's inside a form)
+                    event.preventDefault();
+                    // Stop event propagation to prevent closing immediately from document click
+                    event.stopPropagation();
+                    dropdownContent.classList.toggle('show');
+                });
+            });
+
+            // Close the dropdown if the user clicks outside of it
+            window.addEventListener('click', function(event) {
+                dropdowns.forEach(function(dropdown) {
+                    const dropdownContent = dropdown.querySelector('.dropdown-content');
+                    const dropbtn = dropdown.querySelector('.dropbtn');
+                    // Check if the click was outside the dropdown button AND outside the dropdown content
+                    if (!dropbtn.contains(event.target) && !dropdownContent.contains(event.target)) {
+                        if (dropdownContent.classList.contains('show')) {
+                            dropdownContent.classList.remove('show');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}
