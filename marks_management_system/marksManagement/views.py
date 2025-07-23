@@ -150,9 +150,9 @@ def manage_student_entry(request, pk=None):
 
                         if existing_entry:
                             if existing_entry.marks != marks:
-                                existing_entry.marks = marks
+                                existing_entry.marks = marks + existing_entry.marks
                                 existing_entry.save()
-                                messages.info(request, f"Entry for '{student_name} - {existing_entry.get_subject_name_display()}' already exists. Marks updated to {marks}.")
+                                messages.info(request, f"Entry for '{student_name} - {existing_entry.get_subject_name_display()}' already exists. {marks} has been added to existing marks.")
                             else:
                                 messages.info(request, f"Entry for '{student_name} - {existing_entry.get_subject_name_display()}' already exists with the same marks. No change needed.")
                         else:
