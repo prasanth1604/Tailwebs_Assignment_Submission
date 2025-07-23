@@ -38,8 +38,8 @@ pip install -r requirements.txt
 ```
 
 ```
-git clone https://github.com/prasanth1604/Tailwebs_assignment.git
-cd Tailwebs_assignment
+git clone https://github.com/prasanth1604/Tailwebs_Assignment_Submission.git
+cd Tailwebs_Assignment_Submission
 ```
 
 To migrate the database open terminal in project directory and type
